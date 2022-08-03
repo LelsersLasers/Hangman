@@ -14,11 +14,11 @@ fn read_words(filename: impl AsRef<Path>) -> Vec<String> {
         .collect()
 }
 
-fn choose_word(words: &Vec<String>) -> &String {
+fn choose_word(words: &[String]) -> &String {
     words.iter().choose(&mut rand::thread_rng()).unwrap()
 }
 
-fn print_status(lives: i32, known_letters: &Vec<String>, guessable_letters: &Vec<String>) {
+fn print_status(lives: i32, known_letters: &[String], guessable_letters: &[String]) {
     println!("\nLives: {}", lives);
     println!(
         "Word ({} letters): {}",
@@ -35,7 +35,7 @@ fn get_guess() -> String {
     std::io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
-    let char_option = input.trim().chars().nth(0);
+    let char_option = input.trim().chars().next();
     match char_option {
         Some(c) => c.to_string(),
         None => get_guess(),
@@ -89,11 +89,9 @@ fn main() {
         if lives <= 0 {
             println!("\n\nYou lost!");
             break;
-        } else {
-            if !known_letters.contains(&"_".to_string()) {
-                println!("\n\nYou won!");
-                break;
-            }
+        } else if !known_letters.contains(&"_".to_string()) {
+            println!("\n\nYou won!");
+            break;
         }
     }
     println!("The word was {}\n", word);
